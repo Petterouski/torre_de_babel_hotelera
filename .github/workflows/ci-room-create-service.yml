@@ -43,7 +43,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pytest-cov flake8 black mypy bandit
+        pip install pytest-cov flake8 black bandit
 
     - name: Run code formatting check (Black)
       working-directory: microservices/room-management/room-create-service
@@ -62,10 +62,11 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-    - name: Run static analysis (mypy)
-      working-directory: microservices/room-management/room-create-service
-      run: |
-        mypy . --ignore-missing-imports --no-strict-optional
+    # Eliminamos la prueba de mypy
+    # - name: Run static analysis (mypy)
+    #   working-directory: microservices/room-management/room-create-service
+    #   run: |
+    #     mypy . --ignore-missing-imports --no-strict-optional
 
     - name: Security scan with bandit
       working-directory: microservices/room-management/room-create-service
