@@ -1,6 +1,7 @@
 from ..config.database import get_db_connection
 from ..utils.logger import logger
 
+
 class RoomModel:
     def __init__(self):
         self.conn = get_db_connection()

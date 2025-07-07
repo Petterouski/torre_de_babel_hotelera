@@ -4,11 +4,12 @@ from datetime import datetime
 
 Base = declarative_base()
 
+
 class Room(Base):
     """Room model for database operations"""
-    
+
     __tablename__ = "rooms"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     room_number = Column(String(10), unique=True, index=True, nullable=False)
     room_type = Column(String(50), nullable=False)  # single, double, suite, eco-suite
@@ -21,7 +22,7 @@ class Room(Base):
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-    
+
     def to_dict(self):
         """Convert room instance to dictionary"""
         return {
@@ -36,5 +37,5 @@ class Room(Base):
             "is_available": self.is_available,
             "is_active": self.is_active,
             "created_at": self.created_at.isoformat() if self.created_at else None,
-            "updated_at": self.updated_at.isoformat() if self.updated_at else None
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
         }

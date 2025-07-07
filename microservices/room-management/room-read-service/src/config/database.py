@@ -6,6 +6,7 @@ from ..utils.logger import logger
 
 load_dotenv()
 
+
 def get_db_connection():
     try:
         conn = psycopg2.connect(
@@ -14,7 +15,7 @@ def get_db_connection():
             user=os.getenv("DB_USER", "postgres"),
             password=os.getenv("DB_PASSWORD", "password"),
             port=os.getenv("DB_PORT", "5432"),
-            cursor_factory=RealDictCursor
+            cursor_factory=RealDictCursor,
         )
         logger.info("✅ Conexión a base de datos PostgreSQL establecida")
         return conn

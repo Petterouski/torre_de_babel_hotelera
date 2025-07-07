@@ -2,6 +2,7 @@ from flask import jsonify, request
 from ..services.room_service import RoomService
 from ..utils.logger import logger
 
+
 def get_rooms():
     service = RoomService()
     try:
@@ -10,6 +11,7 @@ def get_rooms():
     except Exception as e:
         logger.error(f"❌ Error en controlador al listar habitaciones: {e}")
         return jsonify({"error": "Error interno del servidor"}), 500
+
 
 def get_room_by_id(room_id):
     service = RoomService()

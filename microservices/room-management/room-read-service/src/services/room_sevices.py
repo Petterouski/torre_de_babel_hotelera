@@ -1,6 +1,7 @@
 from ..repositories.room_repository import RoomRepository
 from ..utils.logger import logger
 
+
 class RoomService:
     def __init__(self):
         self.room_repo = RoomRepository()

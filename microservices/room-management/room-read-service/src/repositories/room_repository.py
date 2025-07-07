@@ -1,6 +1,7 @@
 from ..models.room_model import RoomModel
 from ..utils.logger import logger
 
+
 class RoomRepository:
     def __init__(self):
         self.room_model = RoomModel()

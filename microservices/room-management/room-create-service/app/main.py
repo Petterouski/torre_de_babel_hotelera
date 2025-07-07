@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 # Security
 security = HTTPBearer()
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan events"""
@@ -25,12 +26,13 @@ async def lifespan(app: FastAPI):
     yield
     logger.info("Shutting down room-create-service...")
 
+
 # FastAPI app instance
 app = FastAPI(
     title="Room Create Service",
     description="Microservice for creating hotel rooms in eco-friendly hotel management system",
     version="1.0.0",
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 
 # CORS middleware
@@ -48,33 +50,30 @@ setup_error_handlers(app)
 # Initialize controller
 room_controller = RoomController()
 
+
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
     return {"status": "healthy", "service": "room-create-service"}
 
+
 @app.post("/api/v1/rooms", status_code=201)
 async def create_room(
     room_data: dict,
     credentials: HTTPAuthorizationCredentials = Depends(security),
-    db = Depends(get_db)
+    db=Depends(get_db),
 ):
     """Create a new room"""
     # Verify JWT token
     user_info = verify_jwt_token(credentials.credentials)
-    
+
     logger.info(f"Creating room request from user: {user_info.get('user_id')}")
-    
+
     result = await room_controller.create_room(room_data, db)
-    
+
     logger.info(f"Room created successfully with ID: {result.get('id')}")
     return result
 
+
 if __name__ == "__main__":
-    uvicorn.run(
-        "main:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=True,
-        log_level="info"
-    )
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, log_level="info")

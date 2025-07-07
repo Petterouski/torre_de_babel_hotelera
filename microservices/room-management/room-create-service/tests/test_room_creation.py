@@ -10,10 +10,13 @@ import os
 
 # Test database
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base.metadata.create_all(bind=engine)
+
 
 def override_get_db():
     try:
@@ -22,9 +25,11 @@ def override_get_db():
     finally:
         db.close()
 
+
 app.dependency_overrides[get_db] = override_get_db
 
 client = TestClient(app)
+
 
 def test_create_room_success():
     """Test successful room creation"""
@@ -35,22 +40,21 @@ def test_create_room_success():
         "price_per_night": 75.0,
         "capacity": 1,
         "has_balcony": False,
-        "has_ocean_view": False
+        "has_ocean_view": False,
     }
-    
+
     # Mock JWT token for testing
     token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoidGVzdF91c2VyIn0.test_signature"
-    
+
     response = client.post(
-        "/api/v1/rooms",
-        json=room_data,
-        headers={"Authorization": f"Bearer {token}"}
+        "/api/v1/rooms", json=room_data, headers={"Authorization": f"Bearer {token}"}
     )
-    
+
     assert response.status_code == 201
     data = response.json()
     assert data["success"] is True
     assert data["data"]["room_number"] == "101"
+
 
 def test_create_room_validation_error():
     """Test room creation with validation errors"""
@@ -59,18 +63,17 @@ def test_create_room_validation_error():
         "room_type": "invalid_type",
         "floor": 0,  # Invalid floor
         "price_per_night": -10,  # Invalid price
-        "capacity": 0  # Invalid capacity
+        "capacity": 0,  # Invalid capacity
     }
-    
+
     token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoidGVzdF91c2VyIn0.test_signature"
-    
+
     response = client.post(
-        "/api/v1/rooms",
-        json=room_data,
-        headers={"Authorization": f"Bearer {token}"}
+        "/api/v1/rooms", json=room_data, headers={"Authorization": f"Bearer {token}"}
     )
-    
+
     assert response.status_code == 400
+
 
 def test_health_check():
     """Test health check endpoint"""
