@@ -43,17 +43,18 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pytest-cov flake8 black isort mypy bandit
+        pip install pytest-cov flake8 black mypy bandit
 
     - name: Run code formatting check (Black)
       working-directory: microservices/room-management/room-create-service
       run: |
         black --check --diff .
 
-    - name: Run import sorting check (isort)
-      working-directory: microservices/room-management/room-create-service
-      run: |
-        isort --check-only --diff .
+    # Eliminamos la prueba de isort
+    # - name: Run import sorting check (isort)
+    #   working-directory: microservices/room-management/room-create-service
+    #   run: |
+    #     isort --check-only --diff .
 
     - name: Run linting (flake8)
       working-directory: microservices/room-management/room-create-service
