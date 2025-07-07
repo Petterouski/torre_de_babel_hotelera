@@ -4,6 +4,7 @@ from datetime import datetime
 
 Base: DeclarativeMeta = declarative_base()
 
+
 class Room(Base):
     """Room model for database operations"""
 
