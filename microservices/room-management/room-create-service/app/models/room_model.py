@@ -1,9 +1,8 @@
 from sqlalchemy import Column, Integer, String, Float, Boolean, DateTime, func
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base, DeclarativeMeta
 from datetime import datetime
 
-Base = declarative_base()
-
+Base: DeclarativeMeta = declarative_base()
 
 class Room(Base):
     """Room model for database operations"""
