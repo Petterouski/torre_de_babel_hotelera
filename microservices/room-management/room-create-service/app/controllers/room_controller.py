@@ -4,7 +4,7 @@ from utils.validators import RoomValidator
 from utils.response_formatter import ResponseFormatter
 from config.logging_config import get_logger
 import logging
-
+#Prueba 1 ci
 logger = get_logger(__name__)
 
 class RoomController:
