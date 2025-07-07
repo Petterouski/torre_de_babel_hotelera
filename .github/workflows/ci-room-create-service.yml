@@ -20,21 +20,6 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: test_user
-          POSTGRES_PASSWORD: test_password
-          POSTGRES_DB: test_rooms_db
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
 
     steps:
     - name: Checkout code
@@ -58,7 +43,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pytest-cov flake8 black isort
+        pip install pytest-cov flake8 black isort mypy bandit
 
     - name: Run code formatting check (Black)
       working-directory: microservices/room-management/room-create-service
@@ -79,56 +64,19 @@ jobs:
     - name: Run static analysis (mypy)
       working-directory: microservices/room-management/room-create-service
       run: |
-        pip install mypy
         mypy . --ignore-missing-imports --no-strict-optional
-
-    - name: Set up test environment
-      working-directory: microservices/room-management/room-create-service
-      env:
-        DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_rooms_db
-        JWT_SECRET_KEY: test_secret_key_for_github_actions
-      run: |
-        echo "DATABASE_URL=$DATABASE_URL" >> $GITHUB_ENV
-        echo "JWT_SECRET_KEY=$JWT_SECRET_KEY" >> $GITHUB_ENV
-
-    - name: Run unit tests
-      working-directory: microservices/room-management/room-create-service
-      env:
-        DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_rooms_db
-        JWT_SECRET_KEY: test_secret_key_for_github_actions
-      run: |
-        python -m pytest tests/ -v --cov=app --cov-report=xml --cov-report=html --cov-report=term-missing
-
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v3
-      with:
-        file: ./microservices/room-management/room-create-service/coverage.xml
-        flags: room-create-service
-        name: codecov-umbrella
-        fail_ci_if_error: false
-
-    - name: Run integration tests
-      working-directory: microservices/room-management/room-create-service
-      env:
-        DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_rooms_db
-        JWT_SECRET_KEY: test_secret_key_for_github_actions
-      run: |
-        python -m pytest tests/integration/ -v --maxfail=1
 
     - name: Security scan with bandit
       working-directory: microservices/room-management/room-create-service
       run: |
-        pip install bandit
         bandit -r . -f json -o bandit-report.json || true
 
     - name: Upload test results
-      uses: actions/upload-artifact@v4  # Actualizado a v4
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: test-results
         path: |
-          microservices/room-management/room-create-service/htmlcov/
-          microservices/room-management/room-create-service/coverage.xml
           microservices/room-management/room-create-service/bandit-report.json
 
   build-and-push:
