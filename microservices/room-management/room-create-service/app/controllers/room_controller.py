@@ -5,7 +5,7 @@ from utils.response_formatter import ResponseFormatter
 from config.logging_config import get_logger
 import logging
 
-# Prueba 3 CI
+# Prueba 4.0 CI
 logger = get_logger(__name__)
 
 
