@@ -3,6 +3,7 @@ from services.room_service import RoomService
 from utils.validators import RoomValidator
 from utils.response_formatter import ResponseFormatter
 from config.logging_config import get_logger
+from fastapi import HTTPException
 import logging
 
 # Prueba 4.0 CI
