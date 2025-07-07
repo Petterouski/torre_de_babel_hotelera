@@ -5,12 +5,12 @@ on:
   push:
     branches: [ qa ]
     paths:
-      - 'microservices/room-create-service/**'
+      - 'microservices/room-management/room-create-service/**'
       - '.github/workflows/ci-room-create-service.yml'
   pull_request:
     branches: [ qa ]
     paths:
-      - 'microservices/room-create-service/**'
+      - 'microservices/room-management/room-create-service/**'
 
 env:
   DOCKER_IMAGE: hoteleco/room-create-service
@@ -54,36 +54,36 @@ jobs:
           ${{ runner.os }}-pip-
 
     - name: Install dependencies
-      working-directory: microservices/room-create-service
+      working-directory: microservices/room-management/room-create-service
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install pytest-cov flake8 black isort
 
     - name: Run code formatting check (Black)
-      working-directory: microservices/room-create-service
+      working-directory: microservices/room-management/room-create-service
       run: |
         black --check --diff .
 
     - name: Run import sorting check (isort)
-      working-directory: microservices/room-create-service
+      working-directory: microservices/room-management/room-create-service
       run: |
         isort --check-only --diff .
 
     - name: Run linting (flake8)
-      working-directory: microservices/room-create-service
+      working-directory: microservices/room-management/room-create-service
       run: |
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
     - name: Run static analysis (mypy)
-      working-directory: microservices/room-create-service
+      working-directory: microservices/room-management/room-create-service
       run: |
         pip install mypy
         mypy . --ignore-missing-imports --no-strict-optional
 
     - name: Set up test environment
-      working-directory: microservices/room-create-service
+      working-directory: microservices/room-management/room-create-service
       env:
         DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_rooms_db
         JWT_SECRET_KEY: test_secret_key_for_github_actions
@@ -92,7 +92,7 @@ jobs:
         echo "JWT_SECRET_KEY=$JWT_SECRET_KEY" >> $GITHUB_ENV
 
     - name: Run unit tests
-      working-directory: microservices/room-create-service
+      working-directory: microservices/room-management/room-create-service
       env:
         DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_rooms_db
         JWT_SECRET_KEY: test_secret_key_for_github_actions
@@ -102,13 +102,13 @@ jobs:
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
       with:
-        file: ./microservices/room-create-service/coverage.xml
+        file: ./microservices/room-management/room-create-service/coverage.xml
         flags: room-create-service
         name: codecov-umbrella
         fail_ci_if_error: false
 
     - name: Run integration tests
-      working-directory: microservices/room-create-service
+      working-directory: microservices/room-management/room-create-service
       env:
         DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_rooms_db
         JWT_SECRET_KEY: test_secret_key_for_github_actions
@@ -116,7 +116,7 @@ jobs:
         python -m pytest tests/integration/ -v --maxfail=1
 
     - name: Security scan with bandit
-      working-directory: microservices/room-create-service
+      working-directory: microservices/room-management/room-create-service
       run: |
         pip install bandit
         bandit -r . -f json -o bandit-report.json || true
@@ -127,9 +127,9 @@ jobs:
       with:
         name: test-results
         path: |
-          microservices/room-create-service/htmlcov/
-          microservices/room-create-service/coverage.xml
-          microservices/room-create-service/bandit-report.json
+          microservices/room-management/room-create-service/htmlcov/
+          microservices/room-management/room-create-service/coverage.xml
+          microservices/room-management/room-create-service/bandit-report.json
 
   build-and-push:
     needs: test
